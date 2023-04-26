@@ -1,7 +1,6 @@
 package ru.job4j.urlshortcut.service;
 
 import lombok.AllArgsConstructor;
-import org.springframework.security.crypto.bcrypt.*;
 import org.springframework.stereotype.Service;
 import ru.job4j.urlshortcut.model.*;
 import ru.job4j.urlshortcut.repository.ShortCutRepository;
@@ -14,7 +13,6 @@ import java.util.*;
 public class SpringShortCutService implements ShortCutService {
 
     private final ShortCutRepository shortCutRepository;
-    private BCryptPasswordEncoder encoder;
 
     @Override
     @Transactional
