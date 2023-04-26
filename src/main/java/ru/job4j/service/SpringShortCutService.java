@@ -34,11 +34,6 @@ public class SpringShortCutService implements ShortCutService {
     }
 
     @Override
-    public Optional<ShortCut> findById(int id) {
-        return Optional.empty();
-    }
-
-    @Override
     public Optional<ShortCut> findByLinkCode(String linkCode) {
         return shortCutRepository.findByLinkCode(linkCode);
     }

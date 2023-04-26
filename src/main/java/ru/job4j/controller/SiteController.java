@@ -4,7 +4,6 @@ import lombok.*;
 import org.springframework.http.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.validation.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.bind.annotation.*;

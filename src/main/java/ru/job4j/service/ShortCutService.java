@@ -12,8 +12,6 @@ public interface ShortCutService {
 
     Collection<ShortCut> findAll();
 
-    Optional<ShortCut> findById(int id);
-
     Optional<ShortCut> findByUrlLink(String url);
 
     Optional<ShortCut> findByLinkCode(String linkCode);

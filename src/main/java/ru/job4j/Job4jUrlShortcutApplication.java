@@ -1,7 +1,3 @@
-/**
- * secret = $2a$10$OlxD7ylN5QZcwu7fusJiI.npfYmsu4DoL6ImrDRMVnhkBM8sJfMBC
- */
-
 package ru.job4j;
 
 import org.springframework.boot.SpringApplication;
