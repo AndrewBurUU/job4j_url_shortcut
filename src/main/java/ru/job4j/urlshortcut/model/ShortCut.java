@@ -1,10 +1,10 @@
-package ru.job4j.model;
+package ru.job4j.urlshortcut.model;
 
 import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
-import ru.job4j.validate.*;
+import ru.job4j.urlshortcut.validate.*;
 
 @Data
 @AllArgsConstructor

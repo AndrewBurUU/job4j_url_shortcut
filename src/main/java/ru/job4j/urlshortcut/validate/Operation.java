@@ -1,4 +1,4 @@
-package ru.job4j.validate;
+package ru.job4j.urlshortcut.validate;
 
 public class Operation {
     public interface OnCreate { }

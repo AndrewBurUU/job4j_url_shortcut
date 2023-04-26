@@ -1,6 +1,6 @@
-package ru.job4j.service;
+package ru.job4j.urlshortcut.service;
 
-import ru.job4j.model.*;
+import ru.job4j.urlshortcut.model.*;
 
 import java.util.*;
 

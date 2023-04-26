@@ -1,10 +1,10 @@
-package ru.job4j.service;
+package ru.job4j.urlshortcut.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.bcrypt.*;
 import org.springframework.stereotype.Service;
-import ru.job4j.model.*;
-import ru.job4j.repository.ShortCutRepository;
+import ru.job4j.urlshortcut.model.*;
+import ru.job4j.urlshortcut.repository.ShortCutRepository;
 
 import javax.transaction.*;
 import java.util.*;

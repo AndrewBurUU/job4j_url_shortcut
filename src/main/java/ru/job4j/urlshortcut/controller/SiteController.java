@@ -1,4 +1,4 @@
-package ru.job4j.controller;
+package ru.job4j.urlshortcut.controller;
 
 import lombok.*;
 import org.springframework.http.*;
@@ -7,9 +7,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.bind.annotation.*;
-import ru.job4j.model.*;
-import ru.job4j.service.*;
-import ru.job4j.validate.Operation;
+import ru.job4j.urlshortcut.model.*;
+import ru.job4j.urlshortcut.service.*;
+import ru.job4j.urlshortcut.validate.Operation;
 
 import java.lang.reflect.*;
 import java.util.*;

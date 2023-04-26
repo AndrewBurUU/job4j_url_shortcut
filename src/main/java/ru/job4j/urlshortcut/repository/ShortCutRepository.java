@@ -1,7 +1,7 @@
-package ru.job4j.repository;
+package ru.job4j.urlshortcut.repository;
 
 import org.springframework.data.repository.CrudRepository;
-import ru.job4j.model.*;
+import ru.job4j.urlshortcut.model.*;
 
 import java.util.*;
 

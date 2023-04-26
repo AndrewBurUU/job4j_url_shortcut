@@ -1,4 +1,4 @@
-package ru.job4j.service;
+package ru.job4j.urlshortcut.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.User;
@@ -7,8 +7,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.*;
 import org.springframework.stereotype.Service;
-import ru.job4j.model.*;
-import ru.job4j.repository.SiteRepository;
+import ru.job4j.urlshortcut.model.*;
+import ru.job4j.urlshortcut.repository.SiteRepository;
 
 import javax.transaction.*;
 import java.text.*;
