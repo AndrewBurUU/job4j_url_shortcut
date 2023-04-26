@@ -25,8 +25,6 @@ public class ShortCut {
     @NotBlank(message = "Code must be not empty")
     private String linkCode;
 
-    @NotNull(message = "Site id must be non null")
-    @ManyToOne
-    @JoinColumn(name = "id_site")
-    private Site site;
+    private int callCounter;
+
 }

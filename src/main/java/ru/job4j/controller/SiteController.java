@@ -1,11 +1,10 @@
 package ru.job4j.controller;
 
 import lombok.*;
+import org.springframework.http.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.bind.annotation.*;
@@ -24,8 +23,8 @@ import javax.validation.*;
 public class SiteController {
 
     private final SpringSiteService siteService;
+    private final SpringShortCutService shortCutService;
     private BCryptPasswordEncoder encoder;
-    private final ObjectMapper objectMapper;
 
     @GetMapping("/")
     public List<Site> findAll() {
@@ -106,21 +105,39 @@ public class SiteController {
     }
 
     @PostMapping("/convert")
-    public ResponseEntity<String> convert(@RequestBody Site siteUrl) {
-        var url = siteUrl.getUrlAddress();
-        boolean isNew = false;
-        Site site = siteService.findByUrlAddress(url);
-        if (site == null) {
-            site = siteService.register(url);
-            isNew = true;
+    public ResponseEntity<String> convert(@RequestBody ShortCut shortCutUrl) {
+        var url = shortCutUrl.getUrlLink();
+        Optional<ShortCut> shortCut = shortCutService.findByUrlLink(url);
+        if (shortCut.isEmpty()) {
+            shortCut = Optional.of(shortCutService.register(url, 7));
         }
         return new ResponseEntity<String>(
-                String.format("{registration = %b, login: %s, password: %s}",
-                        isNew,
-                        site.getLogin(),
-                        site.getPassword()),
+                String.format("{code = %s}",
+                        shortCut.get().getLinkCode()),
                 HttpStatus.OK
         );
+    }
+
+    @GetMapping("/redirect/{code}")
+    public ResponseEntity<ShortCut> redirect(@PathVariable String code) {
+        var shortCut = shortCutService.findByLinkCode(code);
+        if (shortCut.isPresent()) {
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Location", shortCut.get().getUrlLink());
+            shortCutService.callCounterUp(shortCut.get());
+            return new ResponseEntity<>(headers, HttpStatus.FOUND);
+        }
+        return new ResponseEntity<ShortCut>(
+                shortCut.orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "LinkCode is not found. Please, check code."
+                )),
+                HttpStatus.NOT_FOUND
+        );
+    }
+
+    @GetMapping("/statistic")
+    public Collection<String> getStatistic() {
+        return shortCutService.getStatistic();
     }
 
 }

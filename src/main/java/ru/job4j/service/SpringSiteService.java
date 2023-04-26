@@ -7,8 +7,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.*;
 import org.springframework.stereotype.Service;
+import ru.job4j.model.*;
 import ru.job4j.repository.SiteRepository;
-import ru.job4j.model.Site;
 
 import javax.transaction.*;
 import java.text.*;
@@ -75,12 +75,17 @@ public class SpringSiteService implements UserDetailsService {
 
     @Transactional
     public Site register(String url) {
+        String password = generatePassword(8);
         Site site = new Site();
         site.setUrlAddress(url);
-        site.setLogin(encoder.encode(
-                String.format("login%s", new SimpleDateFormat("ddMMyyhhmmss").format(new Date()))));
-        site.setPassword(encoder.encode(generatePassword(8)));
-        return create(site);
+        site.setLogin(String.format("login%s", new SimpleDateFormat("ddMMyyhhmmss").format(new Date())));
+        site.setPassword(encoder.encode(password));
+        create(site);
+        Site res = new Site();
+        res.setUrlAddress(url);
+        res.setLogin(String.format("login%s", new SimpleDateFormat("ddMMyyhhmmss").format(new Date())));
+        res.setPassword(password);
+        return res;
     }
 
     public static String generatePassword(int length) {
