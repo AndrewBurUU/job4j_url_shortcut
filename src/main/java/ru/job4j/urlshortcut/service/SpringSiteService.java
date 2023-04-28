@@ -1,14 +1,17 @@
 package ru.job4j.urlshortcut.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.http.*;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.*;
+import ru.job4j.urlshortcut.dto.*;
 import ru.job4j.urlshortcut.model.*;
-import ru.job4j.urlshortcut.repository.SiteRepository;
+import ru.job4j.urlshortcut.repository.*;
 
 import javax.transaction.*;
 import java.text.*;
@@ -21,6 +24,7 @@ import static java.util.Collections.emptyList;
 public class SpringSiteService implements UserDetailsService {
 
     private final SiteRepository siteRepository;
+    private final SiteDTORepository siteDTORepository;
     private BCryptPasswordEncoder encoder;
 
     @Override
@@ -64,10 +68,25 @@ public class SpringSiteService implements UserDetailsService {
     }
 
     @Transactional
-    public boolean delete(Site site) {
-        var res = siteRepository.findById(site.getId());
+    public SiteDTO savePassport(SiteDTO site) {
+        String password = site.getPassword();
+        var siteOptional = siteDTORepository.findById(site.getId());
+        if (siteOptional == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        var siteRes = siteOptional.get();
+        siteRes.setPassword(encoder.encode(password));
+        var siteOriginal = findById(site.getId()).get();
+        siteOriginal.setPassword(siteRes.getPassword());
+        save(siteOriginal);
+        return siteRes;
+    }
+
+    @Transactional
+    public boolean delete(int id) {
+        var res = siteRepository.findById(id);
         if (res.isPresent()) {
-            siteRepository.delete(site);
+            siteRepository.deleteById(id);
             return true;
         }
         return false;
@@ -88,7 +107,22 @@ public class SpringSiteService implements UserDetailsService {
         return res;
     }
 
-    public static String generatePassword(int length) {
+    public RegistrationDTO registration(RegistrationDTO siteUrl) {
+        var url = siteUrl.getUrlAddress();
+        boolean isNew = false;
+        Site site = findByUrlAddress(url);
+        if (site == null) {
+            site = register(url);
+            isNew = true;
+        }
+        siteUrl.setUrlAddress(url);
+        siteUrl.setRegistration(isNew);
+        siteUrl.setLogin(site.getLogin());
+        siteUrl.setPassword(site.getPassword());
+        return  siteUrl;
+    }
+
+    public String generatePassword(int length) {
         String upperCase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         String lowerCase = "abcdefghijklmnopqrstuvwxyz";
         String numbers = "0123456789";
@@ -104,4 +138,5 @@ public class SpringSiteService implements UserDetailsService {
         }
         return new String(password);
     }
+
 }

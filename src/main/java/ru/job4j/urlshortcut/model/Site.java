@@ -9,8 +9,7 @@ import javax.validation.constraints.*;
 
 import ru.job4j.urlshortcut.validate.*;
 
-@AllArgsConstructor
-@NoArgsConstructor
+@Data
 @Entity
 @Table(name = "site")
 public class Site {
@@ -31,38 +30,6 @@ public class Site {
     @NotNull(message = "Password length must be more than 5 characters.")
     @Size(min = 6)
     private String password;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getUrlAddress() {
-        return urlAddress;
-    }
-
-    public void setUrlAddress(String urlAddress) {
-        this.urlAddress = urlAddress;
-    }
-
-    public String getLogin() {
-        return login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 
     @Override
     public boolean equals(Object o) {

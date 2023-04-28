@@ -1,8 +1,11 @@
 package ru.job4j.urlshortcut.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.*;
 import ru.job4j.urlshortcut.model.*;
+import ru.job4j.urlshortcut.dto.*;
 import ru.job4j.urlshortcut.repository.ShortCutRepository;
 
 import javax.transaction.*;
@@ -51,11 +54,11 @@ public class SpringShortCutService implements ShortCutService {
         return save(shortCut);
     }
 
-    public Collection<String> getStatistic() {
+    public Collection<StatisticDTO> getStatistic() {
         Collection<ShortCut> shortCuts = this.findAll();
-        Collection<String> res = new ArrayList<>();
+        Collection<StatisticDTO> res = new ArrayList<>();
         for (ShortCut shortCut: shortCuts) {
-            res.add(String.format("{url : %s, total : %s}", shortCut.getUrlLink(), shortCut.getCallCounter()));
+            res.add(new StatisticDTO(shortCut.getUrlLink(), shortCut.getCallCounter()));
         }
         return res;
     }
@@ -65,4 +68,31 @@ public class SpringShortCutService implements ShortCutService {
         shortCut.setCallCounter(shortCut.getCallCounter() + 1);
         this.update(shortCut);
     }
+
+    public ConvertDTO convert(ConvertDTO convertDTO) {
+        var url = convertDTO.getUrl();
+        Optional<ShortCut> shortCut = findByUrlLink(url);
+        if (shortCut.isEmpty()) {
+            shortCut = Optional.of(register(url, 7));
+        }
+        convertDTO.setCode(shortCut.get().getLinkCode());
+        return convertDTO;
+    }
+
+    public ResponseEntity<ShortCut> redirect(String code) {
+        var shortCut = findByLinkCode(code);
+        if (shortCut.isPresent()) {
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Location", shortCut.get().getUrlLink());
+            callCounterUp(shortCut.get());
+            return new ResponseEntity<>(headers, HttpStatus.FOUND);
+        }
+        return new ResponseEntity<ShortCut>(
+                shortCut.orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "LinkCode is not found. Please, check code."
+                )),
+                HttpStatus.NOT_FOUND
+        );
+    }
+
 }
