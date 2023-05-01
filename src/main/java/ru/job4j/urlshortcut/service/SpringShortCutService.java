@@ -1,9 +1,7 @@
 package ru.job4j.urlshortcut.service;
 
 import lombok.AllArgsConstructor;
-import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.*;
 import ru.job4j.urlshortcut.model.*;
 import ru.job4j.urlshortcut.dto.*;
 import ru.job4j.urlshortcut.repository.ShortCutRepository;
@@ -63,10 +61,8 @@ public class SpringShortCutService implements ShortCutService {
         return res;
     }
 
-    @Transactional
-    public void callCounterUp(ShortCut shortCut) {
-        shortCut.setCallCounter(shortCut.getCallCounter() + 1);
-        this.update(shortCut);
+    public int callCounterInc(int id) {
+        return shortCutRepository.incrementCallCounter(id);
     }
 
     public ConvertDTO convert(ConvertDTO convertDTO) {
@@ -79,20 +75,20 @@ public class SpringShortCutService implements ShortCutService {
         return convertDTO;
     }
 
-    public ResponseEntity<ShortCut> redirect(String code) {
+    public Optional<ShortCut> redirect(String code) {
         var shortCut = findByLinkCode(code);
         if (shortCut.isPresent()) {
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("Location", shortCut.get().getUrlLink());
-            callCounterUp(shortCut.get());
-            return new ResponseEntity<>(headers, HttpStatus.FOUND);
+            callCounterInc(shortCut.get().getId());
         }
-        return new ResponseEntity<ShortCut>(
-                shortCut.orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "LinkCode is not found. Please, check code."
-                )),
-                HttpStatus.NOT_FOUND
-        );
+        return shortCut;
     }
+
+    /**
+     @Transactional
+     public void callCounterUp(ShortCut shortCut) {
+     shortCut.setCallCounter(shortCut.getCallCounter() + 1);
+     this.update(shortCut);
+     }
+     */
 
 }

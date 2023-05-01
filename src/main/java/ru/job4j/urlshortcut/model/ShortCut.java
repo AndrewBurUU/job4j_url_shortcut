@@ -20,11 +20,14 @@ public class ShortCut {
     private int id;
 
     @NotBlank(message = "Url must be not empty")
+    @Column(name = "url_link")
     private String urlLink;
 
     @NotBlank(message = "Code must be not empty")
+    @Column(name = "link_code")
     private String linkCode;
 
+    @Column(name = "call_counter")
     private int callCounter;
 
 }

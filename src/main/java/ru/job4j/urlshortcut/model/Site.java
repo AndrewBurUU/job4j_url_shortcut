@@ -10,6 +10,8 @@ import javax.validation.constraints.*;
 import ru.job4j.urlshortcut.validate.*;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "site")
 public class Site {

@@ -94,7 +94,18 @@ public class SiteController {
 
     @GetMapping("/redirect/{code}")
     public ResponseEntity<ShortCut> redirect(@PathVariable String code) {
-        return shortCutService.redirect(code);
+        var shortCut = shortCutService.redirect(code);
+        if (shortCut.isEmpty()) {
+            return new ResponseEntity<ShortCut>(
+                    shortCut.orElseThrow(() -> new ResponseStatusException(
+                            HttpStatus.NOT_FOUND, "LinkCode is not found. Please, check code."
+                    )),
+                    HttpStatus.NOT_FOUND
+            );
+        }
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Location", shortCut.get().getUrlLink());
+        return new ResponseEntity<>(headers, HttpStatus.FOUND);
     }
 
     @GetMapping("/statistic")

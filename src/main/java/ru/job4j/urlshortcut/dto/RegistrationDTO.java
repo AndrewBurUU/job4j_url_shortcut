@@ -4,6 +4,8 @@ import lombok.*;
 import javax.validation.constraints.*;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class RegistrationDTO {
 
     @NotBlank(message = "Url must be not empty")
