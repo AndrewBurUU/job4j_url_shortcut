@@ -1,0 +1,5 @@
+app:
+  build:
+    context: .
+    dockerfile: Dockerfile
+  container_name: shortcut
